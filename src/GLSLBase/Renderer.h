@@ -17,21 +17,22 @@ public:
 	Renderer(int windowSizeX, int windowSizeY);
 	~Renderer();
 
-	GLuint CreatePngTexture(char * filePath);
-	GLuint CreateBmpTexture(char * filePath);
-	   
+	GLuint CreatePngTexture(char* filePath);
+	GLuint CreateBmpTexture(char* filePath);
+
 	void Test();
+	void Lecture3();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
-	bool ReadFile(std::string filename, std::string *target);
+	bool ReadFile(std::string filename, std::string* target);
 	void AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType);
 	GLuint CompileShaders(std::string filenameVS, std::string filenameFS);
-	void CreateVertexBufferObjects(); 
+	void CreateVertexBufferObjects();
 	unsigned char* loadBMPRaw(const char* imagepath, unsigned int& outWidth, unsigned int& outHeight);
 
-	bool m_Initialized = false;
-	
+	bool m_Initialized{ false };
+
 	unsigned int m_WindowSizeX{ 0 };
 	unsigned int m_WindowSizeY{ 0 };
 
@@ -52,5 +53,6 @@ private:
 	GLuint m_SolidRectShader{ 0 };
 
 	GLuint m_VBORect2{ 0 };
+	GLuint m_Lecture3Shader{ 0 };
 };
 

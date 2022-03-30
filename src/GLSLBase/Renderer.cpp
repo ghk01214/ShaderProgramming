@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <cassert>
 
+float gTime{ 0.f };
+
 Renderer::Renderer(int windowSizeX, int windowSizeY)
 {
 	//default settings
@@ -25,7 +27,8 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_WindowSizeY = windowSizeY;
 
 	//Load shaders
-	m_SolidRectShader = CompileShaders("./Shaders/SolidRectV.glsl", "./Shaders/SolidRectF.glsl");
+	m_SolidRectShader = CompileShaders("Shaders/SolidRectV.glsl", "Shaders/SolidRectF.glsl");
+	m_Lecture3Shader = CompileShaders("Shaders/Lecture3V.glsl", "Shaders/Lecture3F.glsl");
 	
 	//Create VBOs
 	CreateVertexBufferObjects();
@@ -42,8 +45,8 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 
 	//Initialize projection matrix
 	m_m4OrthoProj = glm::ortho(
-		-(float)windowSizeX / 2.f, (float)windowSizeX / 2.f,
-		-(float)windowSizeY / 2.f, (float)windowSizeY / 2.f,
+		-static_cast<float>(windowSizeX) / 2.f, static_cast<float>(windowSizeX) / 2.f,
+		-static_cast<float>(windowSizeY) / 2.f, static_cast<float>(windowSizeY) / 2.f,
 		0.0001f, 10000.f);
 	m_m4PersProj = glm::perspectiveRH(45.f, 1.f, 1.f, 1000.f);
 
@@ -89,7 +92,7 @@ void Renderer::CreateVertexBufferObjects()
 void Renderer::AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
 {
 	//쉐이더 오브젝트 생성
-	GLuint ShaderObj = glCreateShader(ShaderType);
+	GLuint ShaderObj{ glCreateShader(ShaderType) };
 
 	if (ShaderObj == 0) {
 		fprintf(stderr, "Error creating shader type %d\n", ShaderType);
@@ -121,7 +124,7 @@ void Renderer::AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum S
 	glAttachShader(ShaderProgram, ShaderObj);
 }
 
-bool Renderer::ReadFile(std::string filename, std::string *target)
+bool Renderer::ReadFile(std::string filename, std::string* target)
 {
 	std::ifstream file(filename);
 	if (file.fail())
@@ -140,7 +143,7 @@ bool Renderer::ReadFile(std::string filename, std::string *target)
 
 GLuint Renderer::CompileShaders(std::string filenameVS, std::string filenameFS)
 {
-	GLuint ShaderProgram = glCreateProgram(); //빈 쉐이더 프로그램 생성
+	GLuint ShaderProgram{ glCreateProgram() }; //빈 쉐이더 프로그램 생성
 
 	if (ShaderProgram == 0) { //쉐이더 프로그램이 만들어졌는지 확인
 		fprintf(stderr, "Error creating shader program\n");
@@ -148,13 +151,13 @@ GLuint Renderer::CompileShaders(std::string filenameVS, std::string filenameFS)
 
 	std::string vs, fs;
 
-	//shader.vs 가 vs 안으로 로딩됨
+	//shaderV.gla이 vs 안으로 로딩됨
 	if (!ReadFile(filenameVS, &vs)) {
 		printf("Error compiling vertex shader\n");
 		return -1;
 	};
 
-	//shader.fs 가 fs 안으로 로딩됨
+	//shaderF.glsl이 fs 안으로 로딩됨
 	if (!ReadFile(filenameFS, &fs)) {
 		printf("Error compiling fragment shader\n");
 		return -1;
@@ -166,7 +169,7 @@ GLuint Renderer::CompileShaders(std::string filenameVS, std::string filenameFS)
 	// ShaderProgram 에 fs.c_str() 프레그먼트 쉐이더를 컴파일한 결과를 attach함
 	AddShader(ShaderProgram, fs.c_str(), GL_FRAGMENT_SHADER);
 
-	GLint Success = 0;
+	GLint Success{ 0 };
 	GLchar ErrorLog[1024] = { 0 };
 
 	//Attach 완료된 shaderProgram 을 링킹함
@@ -195,7 +198,7 @@ GLuint Renderer::CompileShaders(std::string filenameVS, std::string filenameFS)
 
 	return ShaderProgram;
 }
-unsigned char * Renderer::loadBMPRaw(const char * imagepath, unsigned int& outWidth, unsigned int& outHeight)
+unsigned char* Renderer::loadBMPRaw(const char* imagepath, unsigned int& outWidth, unsigned int& outHeight)
 {
 	std::cout << "Loading bmp file " << imagepath << " ... " << std::endl;
 	outWidth = -1;
@@ -205,10 +208,10 @@ unsigned char * Renderer::loadBMPRaw(const char * imagepath, unsigned int& outWi
 	unsigned int dataPos;
 	unsigned int imageSize;
 	// Actual RGB data
-	unsigned char * data;
+	unsigned char* data;
 
 	// Open the file
-	FILE * file = NULL;
+	FILE* file{ nullptr };
 	fopen_s(&file, imagepath, "rb");
 	if (!file)
 	{
@@ -262,7 +265,7 @@ unsigned char * Renderer::loadBMPRaw(const char * imagepath, unsigned int& outWi
 	return data;
 }
 
-GLuint Renderer::CreatePngTexture(char * filePath)
+GLuint Renderer::CreatePngTexture(char* filePath)
 {
 	//Load Pngs: Load file and decode image.
 	std::vector<unsigned char> image;
@@ -286,12 +289,11 @@ GLuint Renderer::CreatePngTexture(char * filePath)
 	return temp;
 }
 
-GLuint Renderer::CreateBmpTexture(char * filePath)
+GLuint Renderer::CreateBmpTexture(char* filePath)
 {
 	//Load Bmp: Load file and decode image.
 	unsigned int width, height;
-	unsigned char * bmp
-		= loadBMPRaw(filePath, width, height);
+	unsigned char* bmp{ loadBMPRaw(filePath, width, height) };
 
 	if (bmp == NULL)
 	{
@@ -315,13 +317,40 @@ void Renderer::Test()
 {
 	glUseProgram(m_SolidRectShader);
 
-	int attribPosition = glGetAttribLocation(m_SolidRectShader, "a_Position");
+	int attribPosition{ glGetAttribLocation(m_SolidRectShader, "a_Position") };
 	glEnableVertexAttribArray(attribPosition);
 	//glBindBuffer(GL_ARRAY_BUFFER, m_VBORect);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect2);
 	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(attribPosition);
+}
+
+void Renderer::Lecture3()
+{
+	glUseProgram(m_Lecture3Shader);
+
+	int attribPosition{ glGetAttribLocation(m_Lecture3Shader, "a_Position") };
+	glEnableVertexAttribArray(attribPosition);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect2);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+
+	GLint uniPosTime{ glGetUniformLocation(m_Lecture3Shader, "uTime") };
+	glUniform1f(uniPosTime, gTime);
+
+	GLint uniPosColor{ glGetUniformLocation(m_Lecture3Shader, "uColor") };
+	glUniform4f(uniPosColor, 1.f, 0.f, 0.f, 1.f);
+
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	gTime -= 0.01f;
+
+	if (gTime < 0.f)
+	{
+		gTime = 1.f;
+	}
 
 	glDisableVertexAttribArray(attribPosition);
 }

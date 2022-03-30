@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright 2018 Lee Taek Hee (Korea Polytech University)
 
 This program is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@ but WITHOUT ANY WARRANTY.
 
 #include "Renderer.h"
 
-Renderer *g_Renderer = NULL;
+std::unique_ptr<Renderer> g_Renderer{ nullptr };
 
-int g_WindowSizeX = 500;
-int g_WindowSizeY = 500;
+int g_WindowSizeX{ 500 };
+int g_WindowSizeY{ 500 };
 
 void RenderScene(void)
 {
@@ -26,7 +26,8 @@ void RenderScene(void)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Renderer Test
-	g_Renderer->Test();
+	//g_Renderer->Test();
+	g_Renderer->Lecture3();
 
 	glutSwapBuffers();
 }
@@ -51,7 +52,7 @@ void SpecialKeyInput(int key, int x, int y)
 	RenderScene();
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 	// Initialize GL things
 	glutInit(&argc, argv);
@@ -71,7 +72,7 @@ int main(int argc, char **argv)
 	}
 
 	// Initialize Renderer
-	g_Renderer = new Renderer(g_WindowSizeX, g_WindowSizeY);
+	g_Renderer = std::make_unique<Renderer>(g_WindowSizeX, g_WindowSizeY);
 
 	glutDisplayFunc(RenderScene);
 	glutIdleFunc(Idle);
@@ -80,9 +81,4 @@ int main(int argc, char **argv)
 	glutSpecialFunc(SpecialKeyInput);
 
 	glutMainLoop();
-
-	delete g_Renderer;
-
-    return 0;
 }
-
