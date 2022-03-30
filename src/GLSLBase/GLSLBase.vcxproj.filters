@@ -29,10 +29,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\SolidRect.vs">
+    <None Include="Shaders\SolidRectF.glsl">
       <Filter>Shader</Filter>
     </None>
-    <None Include="Shaders\SolidRect.fs">
+    <None Include="Shaders\SolidRectV.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

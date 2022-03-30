@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <string>
 #include <cstdlib>
@@ -24,16 +24,16 @@ public:
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
-	bool ReadFile(char* filename, std::string *target);
+	bool ReadFile(std::string filename, std::string *target);
 	void AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType);
-	GLuint CompileShaders(char* filenameVS, char* filenameFS);
+	GLuint CompileShaders(std::string filenameVS, std::string filenameFS);
 	void CreateVertexBufferObjects(); 
-	unsigned char * Renderer::loadBMPRaw(const char * imagepath, unsigned int& outWidth, unsigned int& outHeight);
+	unsigned char* loadBMPRaw(const char* imagepath, unsigned int& outWidth, unsigned int& outHeight);
 
 	bool m_Initialized = false;
 	
-	unsigned int m_WindowSizeX = 0;
-	unsigned int m_WindowSizeY = 0;
+	unsigned int m_WindowSizeX{ 0 };
+	unsigned int m_WindowSizeY{ 0 };
 
 	//camera position
 	glm::vec3 m_v3Camera_Position;
@@ -48,7 +48,9 @@ private:
 	glm::mat4 m_m4View;
 	glm::mat4 m_m4ProjView;
 
-	GLuint m_VBORect = 0;
-	GLuint m_SolidRectShader = 0;
+	GLuint m_VBORect{ 0 };
+	GLuint m_SolidRectShader{ 0 };
+
+	GLuint m_VBORect2{ 0 };
 };
 
