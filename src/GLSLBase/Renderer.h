@@ -52,7 +52,8 @@ private:
 	GLuint m_VBORect{ 0 };
 	GLuint m_SolidRectShader{ 0 };
 
-	GLuint m_VBORect2{ 0 };
+	GLuint m_VBOLecture2{ 0 };
+	GLuint m_VBOLecture3{ 0 };
 	GLuint m_Lecture3Shader{ 0 };
 };
 

@@ -77,16 +77,34 @@ void Renderer::CreateVertexBufferObjects()
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(rect), rect, GL_STATIC_DRAW);
 
-	GLfloat rect2[] =
+	GLfloat lecture2[] =
 	{
-		0.0, 0.0, 0.f,
-		1.0, 0.0, 0.f,
-		1.0, 1.0, 0.f,
+		// vertices
+		0.f, 0.f, 0.f,
+		1.f, 0.f, 0.f,
+		1.f, 1.f, 0.f,
 	};
 
-	glGenBuffers(1, &m_VBORect2);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect2);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(rect2), rect2, GL_STATIC_DRAW);
+	glGenBuffers(1, &m_VBOLecture2);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture2), lecture2, GL_STATIC_DRAW);
+
+	GLfloat lecture3[] =
+	{
+		// vertices
+		0.f, 0.f, 0.f,
+		1.f, 0.f, 0.f,
+		1.f, 1.f, 0.f,
+
+		// color
+		1.f, 0.f, 0.f, 1.f,
+		0.f, 1.f, 0.f, 1.f,
+		0.f, 0.f, 1.f, 1.f,
+	};
+
+	glGenBuffers(1, &m_VBOLecture3);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture3);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture3), lecture3, GL_STATIC_DRAW);
 }
 
 void Renderer::AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
@@ -320,7 +338,7 @@ void Renderer::Test()
 	int attribPosition{ glGetAttribLocation(m_SolidRectShader, "a_Position") };
 	glEnableVertexAttribArray(attribPosition);
 	//glBindBuffer(GL_ARRAY_BUFFER, m_VBORect);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect2);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
 	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -334,8 +352,13 @@ void Renderer::Lecture3()
 
 	int attribPosition{ glGetAttribLocation(m_Lecture3Shader, "a_Position") };
 	glEnableVertexAttribArray(attribPosition);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect2);
-	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture3);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	int attribColor{ glGetAttribLocation(m_Lecture3Shader, "inColor") };
+	glEnableVertexAttribArray(attribColor);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture3);
+	glVertexAttribPointer(attribColor, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(sizeof(float) * 9));
 
 	GLint uniPosTime{ glGetUniformLocation(m_Lecture3Shader, "uTime") };
 	glUniform1f(uniPosTime, gTime);
