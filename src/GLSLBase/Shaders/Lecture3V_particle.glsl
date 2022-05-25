@@ -8,6 +8,7 @@ in float life_time;
 uniform float time;
 uniform vec3 accel;
 
+float pi = 3.14;
 bool loop = true;
 
 void main()
@@ -22,7 +23,9 @@ void main()
 		float fractional = fract(temp);		// fract() 소수점 아래 부분만 구해주는 셰이더 자체 함수
 		t = fractional * life_time;
 		tt = t * t;
-		new_pos = a_Position + velocity * t + 0.5 * accel * tt;
+		new_pos.x = a_Position.x + velocity.x * t + 0.5 * accel.x * tt;
+		new_pos.y = a_Position.y + sin(t * 2.0 * pi);
+		new_pos.z = 0;
 	}
 	else
 	{
