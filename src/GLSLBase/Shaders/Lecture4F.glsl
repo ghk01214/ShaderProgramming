@@ -30,23 +30,18 @@ vec4 DrawCircle(float dist)
 	return ret;
 }
 
+vec4 DrawCircleLine(float dist)
 {
-	float dist = distance(color.xy, vec2(0.5, 0.5));
-//	vec4 new_color = vec4(0, 0, 0, 0);
-//
-//	if (dist > 0.5)
-//	{
-//		new_color = vec4(1, 1, 1, 1);
-//	}
-//	
-//	FragColor = new_color;
+	vec4 ret = vec4(0, 0, 0, 0);
 
 	if (dist > 0.48 && dist < 0.5)
 	{
-		FragColor = vec4(1);
+		ret = vec4(1);
 	}
 	else
 	{
-		FragColor = vec4(0);
+		ret = vec4(0);
 	}
+
+	return ret;
 }
