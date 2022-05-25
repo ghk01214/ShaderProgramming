@@ -9,6 +9,8 @@ in float life_time;		// 생명 주기
 in float amp;			// 진폭
 in float period;		// 주기
 in float value;			// 값
+in vec4 in_color;
+out vec4 out_color;
 
 uniform float time;		// 진행 시간
 uniform vec3 accel;		// 가속도
@@ -34,8 +36,7 @@ void main()
 
 		new_pos = a_Position + new_pos;
 
-		float temp = t / life_time;
-		float fractional = fract(temp);		// fract() 소수점 아래 부분만 구해주는 셰이더 자체 함수
+		float fractional = fract(t / life_time);		// fract() 소수점 아래 부분만 구해주는 셰이더 자체 함수
 		t = fractional * life_time;
 		tt = t * t;
 
@@ -43,10 +44,13 @@ void main()
 
 		vec3 rotate_vec = normalize(new_accel * rotate_matrix);
 		new_pos = new_pos + amp * t * rotate_vec * sin(period * t * 2.0 * pi);
+		
+		out_color = in_color * (1.0 - fractional);
 	}
 	else
 	{
 		new_pos = vec3(-1000000, -1000000, -100000);
+		out_color = vec4(0, 0, 0, 0);
 	}
 	
 	gl_Position = vec4(new_pos, 1);
