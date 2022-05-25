@@ -3,7 +3,20 @@
 layout(location=0) out vec4 FragColor;
 in vec4 color;
 
-void main()
+const float pi = 3.14;
+
+vec4 CrossPattern()
+{
+	vec4 ret = vec4(1, 1, 1, 1);
+
+	float x = sin((color.x * 2 * pi + pi / 4) * 10);
+	float y = sin((color.y * 2 * pi + pi / 4) * 10);
+	float result = max(x, y);
+
+	ret = vec4(result);
+
+	return ret;
+}
 {
 	float dist = distance(color.xy, vec2(0.5, 0.5));
 //	vec4 new_color = vec4(0, 0, 0, 0);
