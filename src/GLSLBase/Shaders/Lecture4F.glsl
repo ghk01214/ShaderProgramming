@@ -5,7 +5,7 @@ in vec4 color;
 
 void main()
 {
-//	float dist = distance(color.xy, vec2(0.5, 0.5));
+	float dist = distance(color.xy, vec2(0.5, 0.5));
 //	vec4 new_color = vec4(0, 0, 0, 0);
 //
 //	if (dist > 0.5)
@@ -15,7 +15,7 @@ void main()
 //	
 //	FragColor = new_color;
 
-	if (color.y < 0.5)
+	if (dist > 0.48 && dist < 0.5)
 	{
 		FragColor = vec4(1);
 	}
