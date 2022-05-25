@@ -11,6 +11,7 @@ in float period;		// 주기
 in float value;			// 값
 in vec4 in_color;
 out vec4 out_color;
+out vec2 text_coord;
 
 uniform float time;		// 진행 시간
 uniform vec3 accel;		// 가속도
@@ -54,4 +55,5 @@ void main()
 	}
 	
 	gl_Position = vec4(new_pos, 1);
+	text_coord = a_Position.xy;
 }

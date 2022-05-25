@@ -395,7 +395,7 @@ void Renderer::CreateParticle(int count)
 	m_VBOManyParticleVertexCount = count * 3 * 2;
 
 	int index = 0;
-	float particleSize = 0.01f;
+	float particleSize = 0.1f;
 
 	for (int i = 0; i < count; ++i)
 	{
@@ -639,6 +639,9 @@ void Renderer::Lecture3_Particle()
 
 	glUseProgram(shader);
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	// 동일한 VBO를 사용할 경우 반복적으로 Bind 할 필요가 없어서 최초 1번만 해주면 된다
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOManyParticle);
 
@@ -693,6 +696,8 @@ void Renderer::Lecture3_Particle()
 	glDisableVertexAttribArray(attribPeriod);
 	glDisableVertexAttribArray(attribValue);
 	glDisableVertexAttribArray(attribColor);
+
+	glDisable(GL_BLEND);
 }
 
 void Renderer::Lecture4()
