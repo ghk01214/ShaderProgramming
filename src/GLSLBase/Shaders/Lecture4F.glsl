@@ -15,7 +15,7 @@ void main()
 //	
 //	FragColor = new_color;
 
-	if (color.y > 0.5)
+	if (color.y < 0.5)
 	{
 		FragColor = vec4(1);
 	}
