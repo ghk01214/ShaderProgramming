@@ -16,6 +16,7 @@ uniform vec3 accel;		// 가속도
 bool loop = true;
 
 const float pi = 3.14;
+const vec3 gravity = vec3(0, -1.2, 0);		// 중력가속도
 mat3 rotate_matrix =  mat3(0, -1, 0, 1, 0, 0, 0, 0, 0);
 
 void main()
@@ -26,6 +27,7 @@ void main()
 
 	if (t > 0)
 	{
+		vec3 new_accel = gravity + accel;
 		new_pos.x = sin(value * 2 * pi);
 		new_pos.y = cos(value * 2 * pi);
 		new_pos.z = 0;
@@ -37,9 +39,9 @@ void main()
 		t = fractional * life_time;
 		tt = t * t;
 
-		new_pos = new_pos + velocity * t + 0.5 * accel * tt;
+		new_pos = new_pos + new_accel * t + 0.5 * accel * tt;
 
-		vec3 rotate_vec = normalize(velocity * rotate_matrix);
+		vec3 rotate_vec = normalize(new_accel * rotate_matrix);
 		new_pos = new_pos + amp * t * rotate_vec * sin(period * t * 2.0 * pi);
 	}
 	else
