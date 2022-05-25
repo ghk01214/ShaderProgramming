@@ -17,6 +17,19 @@ vec4 CrossPattern()
 
 	return ret;
 }
+
+vec4 DrawCircle(float dist)
+{
+	vec4 ret = vec4(0, 0, 0, 0);
+
+	if (dist > 0.5)
+	{
+		ret = vec4(1, 1, 1, 1);
+	}
+	
+	return ret;
+}
+
 {
 	float dist = distance(color.xy, vec2(0.5, 0.5));
 //	vec4 new_color = vec4(0, 0, 0, 0);
