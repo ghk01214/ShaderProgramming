@@ -45,3 +45,20 @@ vec4 DrawCircleLine(float dist)
 
 	return ret;
 }
+
+vec4 DrawMultipleCircles(float dist)
+{
+	float temp = sin(10 * dist * 2 * pi);
+
+	return vec4(temp);
+}
+
+void main()
+{
+	float dist = distance(color.xy, vec2(0.5, 0.5)); // 0 ~ 0.5
+	
+	//FragColor = DrawCircle(dist);
+	//FragColor = DrawCircleLine(dist);
+	//FragColor = CrossPattern();
+	FragColor = DrawMultipleCircles(dist);
+}
