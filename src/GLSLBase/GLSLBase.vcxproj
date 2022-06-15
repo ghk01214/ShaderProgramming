@@ -187,6 +187,8 @@
     <None Include="Shaders\Lecture5V.glsl" />
     <None Include="Shaders\Lecture6F.glsl" />
     <None Include="Shaders\Lecture6V.glsl" />
+    <None Include="Shaders\Lecture8F.glsl" />
+    <None Include="Shaders\Lecture8V.glsl" />
     <None Include="Shaders\SolidRectF.glsl" />
     <None Include="Shaders\SolidRectV.glsl" />
   </ItemGroup>

@@ -46,6 +46,7 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_Lecture4Shader = CompileShaders("Shaders/Lecture4V.glsl", "Shaders/Lecture4F.glsl");
 	m_Lecture5Shader = CompileShaders("Shaders/Lecture5V.glsl", "Shaders/Lecture5F.glsl");
 	m_Lecture6Shader = CompileShaders("Shaders/Lecture6V.glsl", "Shaders/Lecture6F.glsl");
+	m_Lecture8Shader = CompileShaders("Shaders/Lecture8V.glsl", "Shaders/Lecture8F.glsl");
 
 	//Create VBOs
 	CreateVertexBufferObjects();
@@ -211,6 +212,23 @@ void Renderer::CreateVertexBufferObjects()
 
 	glGenBuffers(1, &m_VBOLecture6);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture6);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture6_fullRect), lecture6_fullRect, GL_STATIC_DRAW);
+#pragma endregion
+
+#pragma region LECTURE8
+	rectSize = 0.5f;
+	float lecture8_fullRect[]
+	{
+		-rectSize, -rectSize, 0.0f, 0.0f, 0.0f,
+		 rectSize,  rectSize, 0.0f, 1.0f, 1.0f,
+		-rectSize,  rectSize, 0.0f, 0.0f, 1.0f,
+		-rectSize, -rectSize, 0.0f, 0.0f, 0.0f,
+		 rectSize, -rectSize, 0.0f, 1.0f, 0.0f,
+		 rectSize,  rectSize, 0.0f, 1.0f, 1.0f,
+	};
+
+	glGenBuffers(1, &m_VBOLecture8);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture8);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture6_fullRect), lecture6_fullRect, GL_STATIC_DRAW);
 #pragma endregion
 }
@@ -923,6 +941,41 @@ void Renderer::Lecture6()
 	glUniform1i(uniformTexSampler, 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_TexRGB);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(attribPosition);
+	glDisableVertexAttribArray(attribTex);
+}
+
+void Renderer::Lecture8()
+{
+	auto shader{ m_Lecture8Shader };
+
+	glUseProgram(shader);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture8);
+
+	int attribPosition{ glGetAttribLocation(shader, "position") };
+	glEnableVertexAttribArray(attribPosition);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
+
+	int attribTex{ glGetAttribLocation(shader, "inTexPos") };
+	glEnableVertexAttribArray(attribTex);
+	glVertexAttribPointer(attribTex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<GLvoid*>(sizeof(float) * 3));
+
+	int uniformTexSampler{ glGetUniformLocation(shader, "texSampler[0]") };
+	glUniform1i(uniformTexSampler, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_TexRGB);
+
+	int uniformTexSampler1{ glGetUniformLocation(shader, "texSampler[1]") };
+	glUniform1i(uniformTexSampler1, 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, m_TexChecker);
+
+	int uniformTime{ glGetUniformLocation(shader, "time") };
+	glUniform1f(uniformTime, gTime);
+	gTime += 0.01f;
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 

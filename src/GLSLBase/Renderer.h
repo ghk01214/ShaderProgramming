@@ -29,6 +29,7 @@ public:
 	void Lecture5();
 	void Lecture5_FullRect();
 	void Lecture6();
+	void Lecture8();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -97,6 +98,16 @@ private:
 
 	GLuint m_TexRGB{ 0 };
 	GLuint m_TexChecker{ 0 };
+#pragma endregion
+
+#pragma region LECTURE8
+	GLuint m_VBOLecture8{ 0 };
+	GLuint m_Lecture8Shader{ 0 };
+#pragma endregion
+
+#pragma region LECTURE9
+	GLuint m_VBOLecture9{ 0 };
+	GLuint m_Lecture9Shader{ 0 };
 #pragma endregion
 };
 
