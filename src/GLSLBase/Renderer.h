@@ -30,6 +30,7 @@ public:
 	void Lecture5_FullRect();
 	void Lecture6();
 	void Lecture8();
+	void Lecture9();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -41,6 +42,7 @@ private:
 	void CreateParticle(int count);
 	void CreateLine(int count);
 	void CreateTexture();
+	void CreateDummyMesh();
 
 	bool m_Initialized{ false };
 
@@ -108,6 +110,10 @@ private:
 #pragma region LECTURE9
 	GLuint m_VBOLecture9{ 0 };
 	GLuint m_Lecture9Shader{ 0 };
+
+	GLuint m_DummyVertexCount{ 0 };
+#pragma endregion
+
 #pragma endregion
 };
 

@@ -35,7 +35,8 @@ void RenderScene(void)
 	//g_Renderer->Lecture5();
 	//g_Renderer->Lecture5_FullRect();
 	//g_Renderer->Lecture6();
-	g_Renderer->Lecture8();
+	//g_Renderer->Lecture8();
+	g_Renderer->Lecture9();
 
 	glutSwapBuffers();
 }
