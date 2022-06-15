@@ -45,6 +45,7 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_Lecture3ParticleShader = CompileShaders("Shaders/Lecture3V_particle.glsl", "Shaders/Lecture3F_particle.glsl");
 	m_Lecture4Shader = CompileShaders("Shaders/Lecture4V.glsl", "Shaders/Lecture4F.glsl");
 	m_Lecture5Shader = CompileShaders("Shaders/Lecture5V.glsl", "Shaders/Lecture5F.glsl");
+	m_Lecture6Shader = CompileShaders("Shaders/Lecture6V.glsl", "Shaders/Lecture6F.glsl");
 
 	//Create VBOs
 	CreateVertexBufferObjects();
@@ -52,6 +53,10 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	CreateParticle(1000);
 	//Create Line
 	CreateLine(2000);
+	//Create Texture
+	CreateTexture();
+	//Load Texture
+	m_TexRGB = CreatePngTexture(const_cast<char*>("rgb.png"));
 
 	//Initialize camera settings
 	m_v3Camera_Position = glm::vec3(0.f, 0.f, 1000.f);
@@ -190,6 +195,23 @@ void Renderer::CreateVertexBufferObjects()
 	glGenBuffers(1, &m_VBOFullRect);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOFullRect);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture5_fullRect), lecture5_fullRect, GL_STATIC_DRAW);
+#pragma endregion
+
+#pragma region LECTURE6
+	rectSize = 0.5f;
+	float lecture6_fullRect[]
+	{
+		-rectSize, -rectSize, 0.0f, 0.0f, 0.0f,
+		 rectSize,  rectSize, 0.0f, 1.0f, 1.0f,
+		-rectSize,  rectSize, 0.0f, 0.0f, 1.0f,
+		-rectSize, -rectSize, 0.0f, 0.0f, 0.0f,
+		 rectSize, -rectSize, 0.0f, 1.0f, 0.0f,
+		 rectSize,  rectSize, 0.0f, 1.0f, 1.0f,
+	};
+
+	glGenBuffers(1, &m_VBOLecture6);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture6);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture6_fullRect), lecture6_fullRect, GL_STATIC_DRAW);
 #pragma endregion
 }
 
@@ -640,6 +662,29 @@ void Renderer::CreateLine(int count)
 	delete[] lineVertices;
 }
 
+void Renderer::CreateTexture()
+{
+	static const GLulong checkerBoard[] =
+	{
+		0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000,
+		0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF,
+		0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000,
+		0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF,
+		0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000,
+		0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF,
+		0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000,
+		0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF
+	};
+
+	glGenTextures(1, &m_TexChecker);
+	glBindTexture(GL_TEXTURE_2D, m_TexChecker);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 8, 8, 0, GL_RGBA, GL_UNSIGNED_BYTE, checkerBoard);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+}
+
 void Renderer::Test()
 {
 	glUseProgram(m_SolidRectShader);
@@ -861,21 +906,26 @@ void Renderer::Lecture5_FullRect()
 
 void Renderer::Lecture6()
 {
-	auto shader{ m_Lecture5Shader };
+	auto shader{ m_Lecture6Shader };
 
 	glUseProgram(shader);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBOFullRect);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture6);
 
 	int attribPosition{ glGetAttribLocation(shader, "position") };
 	glEnableVertexAttribArray(attribPosition);
-	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
 
-	int uniformTime{ glGetUniformLocation(shader, "time") };
-	glUniform1f(uniformTime, gTime);
+	int attribTex{ glGetAttribLocation(shader, "inTexPos") };
+	glEnableVertexAttribArray(attribTex);
+	glVertexAttribPointer(attribTex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<GLvoid*>(sizeof(float) * 3));
 
-	gTime += 0.01f;
+	int uniformTexSampler{ glGetUniformLocation(shader, "texSampler") };
+	glUniform1i(uniformTexSampler, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_TexRGB);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisableVertexAttribArray(attribPosition);
+	glDisableVertexAttribArray(attribTex);
 }

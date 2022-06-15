@@ -59,6 +59,12 @@
     <None Include="Shaders\Lecture5V.glsl">
       <Filter>Shader</Filter>
     </None>
+    <None Include="Shaders\Lecture6F.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shaders\Lecture6V.glsl">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

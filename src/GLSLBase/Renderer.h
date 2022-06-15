@@ -39,6 +39,7 @@ private:
 	unsigned char* loadBMPRaw(const char* imagepath, unsigned int& outWidth, unsigned int& outHeight);
 	void CreateParticle(int count);
 	void CreateLine(int count);
+	void CreateTexture();
 
 	bool m_Initialized{ false };
 
@@ -93,6 +94,9 @@ private:
 #pragma region LECTURE6
 	GLuint m_Lecture6Shader{ 0 };
 	GLuint m_VBOLecture6{ 0 };
+
+	GLuint m_TexRGB{ 0 };
+	GLuint m_TexChecker{ 0 };
 #pragma endregion
 };
 
