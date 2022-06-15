@@ -177,14 +177,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Lecture5F.glsl" />
-    <None Include="Lecture5V.glsl" />
     <None Include="Shaders\Lecture3F.glsl" />
     <None Include="Shaders\Lecture3F_particle.glsl" />
     <None Include="Shaders\Lecture3V.glsl" />
     <None Include="Shaders\Lecture3V_particle.glsl" />
     <None Include="Shaders\Lecture4F.glsl" />
     <None Include="Shaders\Lecture4V.glsl" />
+    <None Include="Shaders\Lecture5F.glsl" />
+    <None Include="Shaders\Lecture5V.glsl" />
     <None Include="Shaders\SolidRectF.glsl" />
     <None Include="Shaders\SolidRectV.glsl" />
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "Renderer.h"
 #include "LoadPng.h"
 #include <Windows.h>
@@ -173,6 +173,23 @@ void Renderer::CreateVertexBufferObjects()
 	glGenBuffers(1, &m_VBOLecture4);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture4);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture4), lecture4, GL_STATIC_DRAW);
+#pragma endregion
+
+#pragma region LECTURE5
+	rectSize = 1.f;
+	float lecture5_fullRect[]
+	{
+		-rectSize, -rectSize, 0.0f,
+		 rectSize,  rectSize, 0.0f,
+		-rectSize,  rectSize, 0.0f,
+		-rectSize, -rectSize, 0.0f,
+		 rectSize, -rectSize, 0.0f,
+		 rectSize,  rectSize, 0.0f,
+	};
+
+	glGenBuffers(1, &m_VBOFullRect);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOFullRect);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture5_fullRect), lecture5_fullRect, GL_STATIC_DRAW);
 #pragma endregion
 }
 
@@ -814,9 +831,30 @@ void Renderer::Lecture5()
 	int uniformTime{ glGetUniformLocation(shader, "time") };
 	glUniform1f(uniformTime, gTime);
 
-	gTime += 0.01f;
+	gTime += 0.1f;
 
 	glDrawArrays(GL_LINE_STRIP, 0, m_VBOLineSegmentCount);
+
+	glDisableVertexAttribArray(attribPosition);
+}
+
+void Renderer::Lecture5_FullRect()
+{
+	auto shader{ m_Lecture5Shader };
+
+	glUseProgram(shader);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOFullRect);
+
+	int attribPosition{ glGetAttribLocation(shader, "position") };
+	glEnableVertexAttribArray(attribPosition);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+
+	int uniformTime{ glGetUniformLocation(shader, "time") };
+	glUniform1f(uniformTime, gTime);
+
+	gTime += 0.01f;
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisableVertexAttribArray(attribPosition);
 }

@@ -53,10 +53,10 @@
     <None Include="Shaders\Lecture4V.glsl">
       <Filter>Shader</Filter>
     </None>
-    <None Include="Lecture5V.glsl">
+    <None Include="Shaders\Lecture5F.glsl">
       <Filter>Shader</Filter>
     </None>
-    <None Include="Lecture5F.glsl">
+    <None Include="Shaders\Lecture5V.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>
