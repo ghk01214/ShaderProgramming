@@ -858,3 +858,24 @@ void Renderer::Lecture5_FullRect()
 
 	glDisableVertexAttribArray(attribPosition);
 }
+
+void Renderer::Lecture6()
+{
+	auto shader{ m_Lecture5Shader };
+
+	glUseProgram(shader);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOFullRect);
+
+	int attribPosition{ glGetAttribLocation(shader, "position") };
+	glEnableVertexAttribArray(attribPosition);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+
+	int uniformTime{ glGetUniformLocation(shader, "time") };
+	glUniform1f(uniformTime, gTime);
+
+	gTime += 0.01f;
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(attribPosition);
+}

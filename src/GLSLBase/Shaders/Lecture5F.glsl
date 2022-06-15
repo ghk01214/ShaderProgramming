@@ -9,7 +9,15 @@ const float PI = 3.141592;
 
 void main()
 {
-//	float sinVal = sin(textCoord.x * 2 * PI);
-//	FragColor = vec4(textCoord, 0, 1);
-	FragColor = vec4(1, 1, 1, 1);
+	float sinVal = 0.5 * sin(2.0 * textCoord.x * 2 * PI + time);
+
+	if (textCoord.y * 2.0 - 1.0 < sinVal &&
+		textCoord.y * 2.0  - 1.0 > sinVal - 0.01)
+	{
+		FragColor = vec4(1);
+	}
+	else
+	{
+		FragColor = vec4(0);
+	}
 }

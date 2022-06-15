@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <string>
 #include <cstdlib>
@@ -28,6 +28,7 @@ public:
 	void Lecture4_RadarCircle();
 	void Lecture5();
 	void Lecture5_FullRect();
+	void Lecture6();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -57,27 +58,41 @@ private:
 	glm::mat4 m_m4View;
 	glm::mat4 m_m4ProjView;
 
+#pragma region LECTURE1
 	GLuint m_VBORect{ 0 };
 	GLuint m_SolidRectShader{ 0 };
+#pragma endregion
 
+#pragma region LECTURE2
 	GLuint m_VBOLecture2{ 0 };
 	GLuint m_VBOLecture3{ 0 };
 	GLuint m_Lecture3Shader{ 0 };
+#pragma endregion
 
+#pragma region LECTURE3
 	GLuint m_VBOSingleParticleQuad{ 0 };
 	GLuint m_Lecture3ParticleShader{ 0 };
+#pragma endregion
 
+#pragma region LECTURE4
 	GLuint m_VBOManyParticle{ 0 };
 	GLuint m_VBOManyParticleVertexCount{ 0 };
 
 	GLuint m_VBOLecture4{ 0 };
 	GLuint m_Lecture4Shader{ 0 };
+#pragma endregion
 
+#pragma region LECTURE5
 	GLuint m_VBOLineSegment{ 0 };
 	GLuint m_VBOLineSegmentCount{ 0 };
 
 	GLuint m_Lecture5Shader{ 0 };
-
 	GLuint m_VBOFullRect{ 0 };
+#pragma endregion
+
+#pragma region LECTURE6
+	GLuint m_Lecture6Shader{ 0 };
+	GLuint m_VBOLecture6{ 0 };
+#pragma endregion
 };
 
