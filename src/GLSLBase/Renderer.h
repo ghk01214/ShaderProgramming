@@ -31,6 +31,8 @@ public:
 	void Lecture6();
 	void Lecture8();
 	void Lecture9();
+	void Lecture11(GLuint texID);
+	void FBORender();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -43,6 +45,7 @@ private:
 	void CreateLine(int count);
 	void CreateTexture();
 	void CreateDummyMesh();
+	void CreateFBO();
 
 	bool m_Initialized{ false };
 
@@ -114,6 +117,13 @@ private:
 	GLuint m_DummyVertexCount{ 0 };
 #pragma endregion
 
+#pragma region LECTURE11
+	GLuint m_VBOLecture11{ 0 };
+	GLuint m_Lecture11Shader{ 0 };
+
+	GLuint m_FBOTexture[4];
+	GLuint m_RenderBufferDepth[4];
+	GLuint m_FBO[4];
 #pragma endregion
 };
 

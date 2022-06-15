@@ -48,6 +48,7 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_Lecture6Shader = CompileShaders("Shaders/Lecture6V.glsl", "Shaders/Lecture6F.glsl");
 	m_Lecture8Shader = CompileShaders("Shaders/Lecture8V.glsl", "Shaders/Lecture8F.glsl");
 	m_Lecture9Shader = CompileShaders("Shaders/Lecture9V.glsl", "Shaders/Lecture9F.glsl");
+	m_Lecture11Shader = CompileShaders("Shaders/Lecture11V.glsl", "Shaders/Lecture11F.glsl");
 
 	//Create VBOs
 	CreateVertexBufferObjects();
@@ -61,6 +62,8 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_TexRGB = CreatePngTexture(const_cast<char*>("rgb.png"));
 	//Create Dummy Mesh
 	CreateDummyMesh();
+	//Create FBO
+	CreateFBO();
 
 	//Initialize camera settings
 	m_v3Camera_Position = glm::vec3(0.f, 0.f, 1000.f);
@@ -233,6 +236,23 @@ void Renderer::CreateVertexBufferObjects()
 	glGenBuffers(1, &m_VBOLecture8);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture8);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture6_fullRect), lecture6_fullRect, GL_STATIC_DRAW);
+#pragma endregion
+
+#pragma region LECTURE11
+	rectSize = 1.f;
+	float lecture11_fullRect[]
+	{
+		-rectSize, -rectSize, 0.0f,
+		 rectSize,  rectSize, 0.0f,
+		-rectSize,  rectSize, 0.0f,
+		-rectSize, -rectSize, 0.0f,
+		 rectSize, -rectSize, 0.0f,
+		 rectSize,  rectSize, 0.0f,
+	};
+
+	glGenBuffers(1, &m_VBOLecture11);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture11);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture11_fullRect), lecture11_fullRect, GL_STATIC_DRAW);
 #pragma endregion
 }
 
@@ -773,6 +793,44 @@ void Renderer::CreateDummyMesh()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (pointCountX - 1) * (pointCountY - 1) * 2 * 3 * 3, vertices, GL_STATIC_DRAW);
 }
 
+void Renderer::CreateFBO()
+{
+	glGenTextures(4, m_FBOTexture);
+	glGenRenderbuffers(4, m_RenderBufferDepth);
+	glGenFramebuffers(4, m_FBO);
+
+	for (int i = 0; i < 4; ++i)
+	{
+		// Color Buffer
+		glBindTexture(GL_TEXTURE_2D, m_FBOTexture[i]);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+		// Depth Buffer
+		glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferDepth[i]);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 512, 512);
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+		// FBO
+		glBindFramebuffer(GL_FRAMEBUFFER, m_FBO[i]);
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_FBOTexture[i], 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferDepth[i]);
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			std::cout << " gen FBO error on FBO[" << i << "]\n";
+		}
+
+		// FBO 초기화 = main frame buffer에 다시 그리도록 한다
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+}
+
 void Renderer::Test()
 {
 	glUseProgram(m_SolidRectShader);
@@ -827,7 +885,7 @@ void Renderer::Lecture3_Particle()
 	glUseProgram(shader);
 
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);		// 실행하면 안 그려짐
 
 	// 동일한 VBO를 사용할 경우 반복적으로 Bind 할 필요가 없어서 최초 1번만 해주면 된다
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOManyParticle);
@@ -1071,4 +1129,68 @@ void Renderer::Lecture9()
 	glDrawArrays(GL_LINE_STRIP, 0, m_DummyVertexCount);
 
 	glDisableVertexAttribArray(attribPosition);
+}
+
+void Renderer::Lecture11(GLuint texID)
+{
+	auto shader{ m_Lecture11Shader };
+
+	glUseProgram(shader);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture11);
+
+	int attribPosition{ glGetAttribLocation(shader, "position") };
+	glEnableVertexAttribArray(attribPosition);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+
+	int uniformSampler{ glGetUniformLocation(shader, "texSampler") };
+	glUniform1f(uniformSampler, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texID);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(attribPosition);
+}
+
+void Renderer::FBORender()
+{
+	// bind fbo
+	// set viewport
+	// clear
+	// render
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO[0]);
+	glViewport(0, 0, 512, 512);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	Lecture3_Particle();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO[1]);
+	glViewport(0, 0, 512, 512);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	Lecture4_Raindrop();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO[2]);
+	glViewport(0, 0, 512, 512);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	Lecture4_RadarCircle();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO[3]);
+	glViewport(0, 0, 512, 512);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	Lecture9();
+
+	// restore frame buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// draw texture
+	glViewport(0, 0, 256, 256);
+	Lecture11(m_FBOTexture[0]);
+
+	glViewport(256, 0, 256, 256);
+	Lecture11(m_FBOTexture[1]);
+
+	glViewport(0, 256, 256, 256);
+	Lecture11(m_FBOTexture[2]);
+
+	glViewport(256, 256, 256, 256);
+	Lecture11(m_FBOTexture[3]);
 }

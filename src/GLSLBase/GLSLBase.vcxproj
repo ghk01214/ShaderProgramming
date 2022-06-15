@@ -177,6 +177,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\Lecture11F.glsl" />
+    <None Include="Shaders\Lecture11V.glsl" />
     <None Include="Shaders\Lecture3F.glsl" />
     <None Include="Shaders\Lecture3F_particle.glsl" />
     <None Include="Shaders\Lecture3V.glsl" />
