@@ -5,11 +5,11 @@
 #include <fstream>
 #include <iostream>
 
-#include "Dependencies\glew.h"
-#include "Dependencies\wglew.h"
-#include "Dependencies\glm/glm.hpp"
-#include "Dependencies\glm/gtc/matrix_transform.hpp"
-#include "Dependencies\glm/gtx/euler_angles.hpp"
+#include "Dependencies/glew.h"
+#include "Dependencies/wglew.h"
+#include "Dependencies/glm/glm.hpp"
+#include "Dependencies/glm/gtc/matrix_transform.hpp"
+#include "Dependencies/glm/gtx/euler_angles.hpp"
 
 class Renderer
 {
@@ -25,6 +25,7 @@ public:
 	void Lecture3_Particle();
 	void Lecture4();
 	void Lecture4_Raindrop();
+	void Lecture4_RadarCircle();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);

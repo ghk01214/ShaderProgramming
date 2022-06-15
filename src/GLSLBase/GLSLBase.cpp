@@ -30,7 +30,8 @@ void RenderScene(void)
 	//g_Renderer->Lecture3();
 	//g_Renderer->Lecture3_Particle();
 	//g_Renderer->Lecture4();
-	g_Renderer->Lecture4_Raindrop();
+	//g_Renderer->Lecture4_Raindrop();
+	g_Renderer->Lecture4_RadarCircle();
 
 	glutSwapBuffers();
 }

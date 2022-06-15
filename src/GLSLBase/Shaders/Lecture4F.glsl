@@ -73,6 +73,25 @@ vec4 DrawMultipleCircles(float dist)
 	return vec4(temp);
 }
 
+vec4 RadarCircle()
+{
+	float d = distance(vec2(0.5, 0), color.xy);
+	float sinVal = pow(sin(d * 2 * pi - time * 100), 16);
+	vec4 ret = vec4(sinVal);
+
+	for (int i = 0; i < 10; ++i)
+	{
+		float dis = distance(points[i].xy, color.xy);
+
+		if (dis < 0.2)
+		{
+			ret += 0.2 * vec4(clamp(sin(dis * 4 * pi), 0, 1));
+		}
+	}
+
+	return ret;
+}
+
 void main()
 {
 	float dist = distance(color.xy, vec2(0.5, 0.5)); // 0 ~ 0.5
@@ -81,5 +100,6 @@ void main()
 	//FragColor = DrawCircleLine(dist);
 	//FragColor = CrossPattern();
 	//FragColor = DrawMultipleCircles(dist);
-	FragColor = DrawCircles();
+	//FragColor = DrawCircles();
+	FragColor = RadarCircle();
 }
