@@ -76,16 +76,16 @@ vec4 DrawMultipleCircles(float dist)
 vec4 RadarCircle()
 {
 	float d = distance(vec2(0.5, 0), color.xy);
-	float sinVal = pow(sin(d * 2 * pi - time * 100), 16);
-	vec4 ret = vec4(sinVal);
+	float sinVal = clamp(pow(sin(d * 2 * pi - time * 100), 4), 0, 1);
+	vec4 ret = vec4(0.5 * sinVal);
 
 	for (int i = 0; i < 10; ++i)
 	{
 		float dis = distance(points[i].xy, color.xy);
 
-		if (dis < 0.2)
+		if (dis < 0.1)
 		{
-			ret += 0.2 * vec4(clamp(sin(dis * 4 * pi), 0, 1));
+			ret += vec4(0, 20 * sinVal * 0.1 - dis, 0, 0);
 		}
 	}
 
