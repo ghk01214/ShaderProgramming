@@ -44,11 +44,14 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_Lecture3Shader = CompileShaders("Shaders/Lecture3V.glsl", "Shaders/Lecture3F.glsl");
 	m_Lecture3ParticleShader = CompileShaders("Shaders/Lecture3V_particle.glsl", "Shaders/Lecture3F_particle.glsl");
 	m_Lecture4Shader = CompileShaders("Shaders/Lecture4V.glsl", "Shaders/Lecture4F.glsl");
+	m_Lecture5Shader = CompileShaders("Shaders/Lecture5V.glsl", "Shaders/Lecture5F.glsl");
 
 	//Create VBOs
 	CreateVertexBufferObjects();
 	//Create Particles
 	CreateParticle(1000);
+	//Create Line
+	CreateLine(2000);
 
 	//Initialize camera settings
 	m_v3Camera_Position = glm::vec3(0.f, 0.f, 1000.f);
@@ -599,6 +602,27 @@ void Renderer::CreateParticle(int count)
 	delete[] particleVertices;
 }
 
+void Renderer::CreateLine(int count)
+{
+	int floatCount{ count * 3 };
+	float* lineVertices{ new float[floatCount] };
+	m_VBOLineSegmentCount = count;
+	int index{ 0 };
+
+	for (int i = 0; i < count; ++i)
+	{
+		lineVertices[index++] = -1.f + i * 2.f / (count - 1);
+		lineVertices[index++] = 0.f;
+		lineVertices[index++] = 0.f;
+	}
+
+	glGenBuffers(1, &m_VBOLineSegment);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLineSegment);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * floatCount, lineVertices, GL_STATIC_DRAW);
+
+	delete[] lineVertices;
+}
+
 void Renderer::Test()
 {
 	glUseProgram(m_SolidRectShader);
@@ -772,6 +796,27 @@ void Renderer::Lecture4_RadarCircle()
 	gTime += 0.001f;
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(attribPosition);
+}
+
+void Renderer::Lecture5()
+{
+	auto shader{ m_Lecture5Shader };
+
+	glUseProgram(shader);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLineSegment);
+
+	int attribPosition{ glGetAttribLocation(shader, "position") };
+	glEnableVertexAttribArray(attribPosition);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+
+	int uniformTime{ glGetUniformLocation(shader, "time") };
+	glUniform1f(uniformTime, gTime);
+
+	gTime += 0.01f;
+
+	glDrawArrays(GL_LINE_STRIP, 0, m_VBOLineSegmentCount);
 
 	glDisableVertexAttribArray(attribPosition);
 }

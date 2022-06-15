@@ -26,6 +26,7 @@ public:
 	void Lecture4();
 	void Lecture4_Raindrop();
 	void Lecture4_RadarCircle();
+	void Lecture5();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -35,6 +36,7 @@ private:
 	void CreateVertexBufferObjects();
 	unsigned char* loadBMPRaw(const char* imagepath, unsigned int& outWidth, unsigned int& outHeight);
 	void CreateParticle(int count);
+	void CreateLine(int count);
 
 	bool m_Initialized{ false };
 
@@ -69,5 +71,10 @@ private:
 
 	GLuint m_VBOLecture4{ 0 };
 	GLuint m_Lecture4Shader{ 0 };
+
+	GLuint m_VBOLineSegment{ 0 };
+	GLuint m_VBOLineSegmentCount{ 0 };
+
+	GLuint m_Lecture5Shader{ 0 };
 };
 
