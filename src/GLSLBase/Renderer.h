@@ -24,6 +24,7 @@ public:
 	void Lecture3();
 	void Lecture3_Particle();
 	void Lecture4();
+	void Lecture4_Raindrop();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);

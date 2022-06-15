@@ -5,6 +5,9 @@ in vec4 color;
 
 const float pi = 3.14;
 
+uniform vec3 points[10];
+uniform float time;
+
 vec4 CrossPattern()
 {
 	vec4 ret = vec4(1, 1, 1, 1);
@@ -28,6 +31,23 @@ vec4 DrawCircle(float dist)
 	}
 	
 	return ret;
+}
+
+vec4 DrawCircles()
+{
+	vec4 retColor = vec4(0);
+
+	for (int i = 0; i < 10; ++i)
+	{
+		float d = distance(points[i].xy, color.xy);
+
+		if (d < time)
+		{
+			retColor += vec4(sin(10 * d * 4 * pi - time * 100));
+		}
+	}
+
+	return retColor;
 }
 
 vec4 DrawCircleLine(float dist)
@@ -60,5 +80,6 @@ void main()
 	//FragColor = DrawCircle(dist);
 	//FragColor = DrawCircleLine(dist);
 	//FragColor = CrossPattern();
-	FragColor = DrawMultipleCircles(dist);
+	//FragColor = DrawMultipleCircles(dist);
+	FragColor = DrawCircles();
 }
